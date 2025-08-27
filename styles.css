@@ -162,6 +162,19 @@ h2 {
     text-align: left;
 }
 
+/* Position-based row coloring */
+.hitter-row {
+    background-color: #ffebee; /* Light red */
+}
+
+.setter-row {
+    background-color: #e8f5e9; /* Light green */
+}
+
+.ds-row {
+    background-color: #e3f2fd; /* Light blue */
+}
+
 .add-column,
 .subtract-column {
     padding: 5px 10px;

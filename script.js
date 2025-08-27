@@ -66,7 +66,7 @@ function switchGame() {
 // Player management functions
 function addPlayer() {
     const name = playerNameInput.value.trim();
-    const position = playerPositionInput.value.trim();
+    const position = playerPositionInput.value;
     
     if (!name || !position) return;
     
@@ -90,7 +90,7 @@ function addPlayer() {
     
     // Clear form
     playerNameInput.value = '';
-    playerPositionInput.value = '';
+    playerPositionInput.selectedIndex = 0;
     
     saveGame();
     renderStatsTable();
@@ -138,6 +138,10 @@ function renderStatsTable() {
     
     Object.values(currentGame.players).forEach(player => {
         const row = document.createElement('tr');
+        
+        // Add position-based CSS class
+        const positionClass = player.position.toLowerCase() + '-row';
+        row.classList.add(positionClass);
         
         row.innerHTML = `
             <td>${player.name}</td>
