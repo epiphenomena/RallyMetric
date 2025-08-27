@@ -10,6 +10,7 @@ const playerNameInput = document.getElementById('player-name');
 const playerPositionInput = document.getElementById('player-position');
 const playersList = document.getElementById('players-list');
 const statsBody = document.getElementById('stats-body');
+const downloadCsvButton = document.getElementById('download-csv');
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', () => {
@@ -35,6 +36,9 @@ function setupEventListeners() {
         e.preventDefault();
         addPlayer();
     });
+    
+    // Download CSV
+    downloadCsvButton.addEventListener('click', downloadCSV);
 }
 
 // Game management functions
@@ -77,7 +81,7 @@ function addPlayer() {
         id: playerId,
         name: name,
         position: position,
-        playing: true, // Default to playing when added
+        playing: false, // Default to not playing when added
         stats: {
             aces: 0,
             serves: 0,
@@ -263,4 +267,48 @@ function loadGames() {
             game.date = new Date(game.date);
         });
     }
+}
+
+// CSV Export function
+function downloadCSV() {
+    if (!currentGameId || !games[currentGameId]) return;
+    
+    const currentGame = games[currentGameId];
+    const players = Object.values(currentGame.players);
+    
+    // Create CSV content
+    let csvContent = "Playing,Player,Position,Aces,Serves,Digs,Sets,Hits,Kills,Blocks\
+";
+    
+    players.forEach(player => {
+        const row = [
+            player.playing ? 'Yes' : 'No',
+            player.name,
+            player.position,
+            player.stats.aces,
+            player.stats.serves,
+            player.stats.digs,
+            player.stats.sets,
+            player.stats.hits,
+            player.stats.kills,
+            player.stats.blocks
+        ].join(',');
+        
+        csvContent += row + '\
+';
+    });
+    
+    // Create download link
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const fileName = `rallymetric-${currentGame.name.replace(/[^a-zA-Z0-9]/g, '-')}.csv`;
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', fileName);
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
