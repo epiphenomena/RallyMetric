@@ -77,6 +77,7 @@ function addPlayer() {
         id: playerId,
         name: name,
         position: position,
+        playing: true, // Default to playing when added
         stats: {
             aces: 0,
             serves: 0,
@@ -136,7 +137,22 @@ function renderStatsTable() {
     const currentGame = games[currentGameId];
     statsBody.innerHTML = '';
     
-    Object.values(currentGame.players).forEach(player => {
+    // Sort players: playing first, then by position, then by name
+    const sortedPlayers = Object.values(currentGame.players).sort((a, b) => {
+        // First sort by playing status (playing first)
+        if (a.playing && !b.playing) return -1;
+        if (!a.playing && b.playing) return 1;
+        
+        // Then sort by position
+        const positionOrder = { 'Setter': 1, 'Hitter': 2, 'DS': 3 };
+        const positionComparison = (positionOrder[a.position] || 4) - (positionOrder[b.position] || 4);
+        if (positionComparison !== 0) return positionComparison;
+        
+        // Finally sort by name
+        return a.name.localeCompare(b.name);
+    });
+    
+    sortedPlayers.forEach(player => {
         const row = document.createElement('tr');
         
         // Add position-based CSS class
@@ -144,6 +160,7 @@ function renderStatsTable() {
         row.classList.add(positionClass);
         
         row.innerHTML = `
+            <td><input type="checkbox" class="playing-checkbox" data-player-id="${player.id}" ${player.playing ? 'checked' : ''}></td>
             <td>${player.name}</td>
             <td>${player.position}</td>
             <td>
@@ -208,6 +225,22 @@ function renderStatsTable() {
             e.stopPropagation();
             const playerId = button.getAttribute('data-player-id');
             removePlayer(playerId);
+        });
+    });
+    
+    // Add event listeners for the playing checkboxes
+    document.querySelectorAll('.playing-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', (e) => {
+            e.stopPropagation();
+            const playerId = checkbox.getAttribute('data-player-id');
+            const currentGame = games[currentGameId];
+            const player = currentGame.players[playerId];
+            
+            if (player) {
+                player.playing = checkbox.checked;
+                saveGame();
+                renderStatsTable();
+            }
         });
     });
 }
