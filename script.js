@@ -270,45 +270,4 @@ function loadGames() {
 }
 
 // CSV Export function
-function downloadCSV() {
-    if (!currentGameId || !games[currentGameId]) return;
-    
-    const currentGame = games[currentGameId];
-    const players = Object.values(currentGame.players);
-    
-    // Create CSV content
-    let csvContent = "Playing,Player,Position,Aces,Serves,Digs,Sets,Hits,Kills,Blocks\
-";
-    
-    players.forEach(player => {
-        const row = [
-            player.playing ? 'Yes' : 'No',
-            player.name,
-            player.position,
-            player.stats.aces,
-            player.stats.serves,
-            player.stats.digs,
-            player.stats.sets,
-            player.stats.hits,
-            player.stats.kills,
-            player.stats.blocks
-        ].join(',');
-        
-        csvContent += row + '\
-';
-    });
-    
-    // Create download link
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    const fileName = `rallymetric-${currentGame.name.replace(/[^a-zA-Z0-9]/g, '-')}.csv`;
-    
-    link.setAttribute('href', url);
-    link.setAttribute('download', fileName);
-    link.style.visibility = 'hidden';
-    
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
+function downloadCSV() {\n    if (!currentGameId || !games[currentGameId]) return;\n    \n    const currentGame = games[currentGameId];\n    const players = Object.values(currentGame.players);\n    \n    // Create CSV content\n    let csvContent = "Playing,Player,Position,Aces,Serves,Digs,Sets,Hits,Kills,Blocks\n";\n    \n    players.forEach(player => {\n        const row = [\n            player.playing ? 'Yes' : 'No',\n            player.name,\n            player.position,\n            player.stats.aces,\n            player.stats.serves,\n            player.stats.digs,\n            player.stats.sets,\n            player.stats.hits,\n            player.stats.kills,\n            player.stats.blocks\n        ].join(',');\n        \n        csvContent += row + '\n';\n    });\n    \n    // Create download link\n    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });\n    const url = URL.createObjectURL(blob);\n    const link = document.createElement('a');\n    const fileName = `rallymetric-${currentGame.name.replace(/[^a-zA-Z0-9]/g, '-')}.csv`;\n    \n    link.setAttribute('href', url);\n    link.setAttribute('download', fileName);\n    link.style.visibility = 'hidden';\n    \n    document.body.appendChild(link);\n    link.click();\n    document.body.removeChild(link);\n}
