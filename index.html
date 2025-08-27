@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RallyMetric - Volleyball Statistics Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>RallyMetric</h1>
+        <p>A simple statistics tracker for volleyball managers</p>
+    </header>
+
+    <main>
+        <section class="game-selector">
+            <label for="game-date">Select Game:</label>
+            <select id="game-date"></select>
+            <button id="new-game">New Game</button>
+        </section>
+
+        <section class="player-management">
+            <h2>Players</h2>
+            <form id="player-form">
+                <input type="text" id="player-name" placeholder="Player Name" required>
+                <input type="text" id="player-position" placeholder="Position" required>
+                <button type="submit">Add Player</button>
+            </form>
+            <div id="players-list"></div>
+        </section>
+
+        <section class="statistics">
+            <h2>Statistics</h2>
+            <div id="stats-table-container">
+                <table id="stats-table">
+                    <thead>
+                        <tr>
+                            <th>Player</th>
+                            <th>Position</th>
+                            <th>Aces <button class="add-column" data-stat="aces">+</button></th>
+                            <th>Serves <button class="add-column" data-stat="serves">+</button></th>
+                            <th>Digs <button class="add-column" data-stat="digs">+</button></th>
+                            <th>Sets <button class="add-column" data-stat="sets">+</button></th>
+                            <th>Hits <button class="add-column" data-stat="hits">+</button></th>
+                            <th>Kills <button class="add-column" data-stat="kills">+</button></th>
+                            <th>Blocks <button class="add-column" data-stat="blocks">+</button></th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stats-body">
+                        <!-- Player rows will be added here dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
