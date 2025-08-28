@@ -17,11 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
     loadGames();
     setupEventListeners();
     renderGameSelector();
-    
+
     if (!currentGameId || !games[currentGameId]) {
         createNewGame();
     }
-    
+
     renderStatsTable();
 });
 
@@ -30,13 +30,13 @@ function setupEventListeners() {
     // Game management
     newGameButton.addEventListener('click', createNewGame);
     gameDateSelect.addEventListener('change', switchGame);
-    
+
     // Player management
     playerForm.addEventListener('submit', (e) => {
         e.preventDefault();
         addPlayer();
     });
-    
+
     // Download CSV
     downloadCsvButton.addEventListener('click', downloadCSV);
 }
@@ -46,14 +46,14 @@ function createNewGame() {
     const now = new Date();
     const gameId = now.toISOString();
     const gameName = `${now.toLocaleDateString()} ${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
-    
+
     games[gameId] = {
         id: gameId,
         name: gameName,
         date: now,
         players: {}
     };
-    
+
     currentGameId = gameId;
     localStorage.setItem('rallymetric-current-game', currentGameId);
     saveGames();
@@ -71,12 +71,12 @@ function switchGame() {
 function addPlayer() {
     const name = playerNameInput.value.trim();
     const position = playerPositionInput.value;
-    
+
     if (!name || !position) return;
-    
+
     const playerId = Date.now().toString(); // Simple unique ID
     const currentGame = games[currentGameId];
-    
+
     currentGame.players[playerId] = {
         id: playerId,
         name: name,
@@ -92,11 +92,11 @@ function addPlayer() {
             blocks: 0
         }
     };
-    
+
     // Clear form
     playerNameInput.value = '';
     playerPositionInput.selectedIndex = 0;
-    
+
     saveGame();
     renderStatsTable();
 }
@@ -112,7 +112,7 @@ function removePlayer(playerId) {
 function updatePlayerStat(playerId, statName, change) {
     const currentGame = games[currentGameId];
     const player = currentGame.players[playerId];
-    
+
     if (player) {
         player.stats[statName] = Math.max(0, player.stats[statName] + change);
     }
@@ -121,7 +121,7 @@ function updatePlayerStat(playerId, statName, change) {
 // Render functions
 function renderGameSelector() {
     gameDateSelect.innerHTML = '';
-    
+
     Object.values(games)
         .sort((a, b) => new Date(b.date) - new Date(a.date))
         .forEach(game => {
@@ -137,32 +137,32 @@ function renderGameSelector() {
 
 function renderStatsTable() {
     if (!currentGameId || !games[currentGameId]) return;
-    
+
     const currentGame = games[currentGameId];
     statsBody.innerHTML = '';
-    
+
     // Sort players: playing first, then by position, then by name
     const sortedPlayers = Object.values(currentGame.players).sort((a, b) => {
         // First sort by playing status (playing first)
         if (a.playing && !b.playing) return -1;
         if (!a.playing && b.playing) return 1;
-        
+
         // Then sort by position
         const positionOrder = { 'Setter': 1, 'Hitter': 2, 'DS': 3 };
         const positionComparison = (positionOrder[a.position] || 4) - (positionOrder[b.position] || 4);
         if (positionComparison !== 0) return positionComparison;
-        
+
         // Finally sort by name
         return a.name.localeCompare(b.name);
     });
-    
+
     sortedPlayers.forEach(player => {
         const row = document.createElement('tr');
-        
+
         // Add position-based CSS class
         const positionClass = player.position.toLowerCase() + '-row';
         row.classList.add(positionClass);
-        
+
         row.innerHTML = `
             <td><input type="checkbox" class="playing-checkbox" data-player-id="${player.id}" ${player.playing ? 'checked' : ''}></td>
             <td>${player.name}</td>
@@ -206,10 +206,10 @@ function renderStatsTable() {
                 <button class="remove-player-row" data-player-id="${player.id}">×</button>
             </td>
         `;
-        
+
         statsBody.appendChild(row);
     });
-    
+
     // Add event listeners for the new buttons
     document.querySelectorAll('.subtract-column, .add-column').forEach(button => {
         button.addEventListener('click', (e) => {
@@ -217,13 +217,13 @@ function renderStatsTable() {
             const stat = button.getAttribute('data-stat');
             const playerId = button.getAttribute('data-player-id');
             const change = button.classList.contains('add-column') ? 1 : -1;
-            
+
             updatePlayerStat(playerId, stat, change);
             saveGame();
             renderStatsTable();
         });
     });
-    
+
     document.querySelectorAll('.remove-player-row').forEach(button => {
         button.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -231,7 +231,7 @@ function renderStatsTable() {
             removePlayer(playerId);
         });
     });
-    
+
     // Add event listeners for the playing checkboxes
     document.querySelectorAll('.playing-checkbox').forEach(checkbox => {
         checkbox.addEventListener('change', (e) => {
@@ -239,7 +239,7 @@ function renderStatsTable() {
             const playerId = checkbox.getAttribute('data-player-id');
             const currentGame = games[currentGameId];
             const player = currentGame.players[playerId];
-            
+
             if (player) {
                 player.playing = checkbox.checked;
                 saveGame();
@@ -270,4 +270,39 @@ function loadGames() {
 }
 
 // CSV Export function
-function downloadCSV() {\n    if (!currentGameId || !games[currentGameId]) return;\n    \n    const currentGame = games[currentGameId];\n    const players = Object.values(currentGame.players);\n    \n    // Create CSV content\n    let csvContent = "Playing,Player,Position,Aces,Serves,Digs,Sets,Hits,Kills,Blocks\n";\n    \n    players.forEach(player => {\n        const row = [\n            player.playing ? 'Yes' : 'No',\n            player.name,\n            player.position,\n            player.stats.aces,\n            player.stats.serves,\n            player.stats.digs,\n            player.stats.sets,\n            player.stats.hits,\n            player.stats.kills,\n            player.stats.blocks\n        ].join(',');\n        \n        csvContent += row + '\n';\n    });\n    \n    // Create download link\n    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });\n    const url = URL.createObjectURL(blob);\n    const link = document.createElement('a');\n    const fileName = `rallymetric-${currentGame.name.replace(/[^a-zA-Z0-9]/g, '-')}.csv`;\n    \n    link.setAttribute('href', url);\n    link.setAttribute('download', fileName);\n    link.style.visibility = 'hidden';\n    \n    document.body.appendChild(link);\n    link.click();\n    document.body.removeChild(link);\n}
+function downloadCSV() {
+    if (!currentGameId || !games[currentGameId]) return;
+    const currentGame = games[currentGameId];
+    const players = Object.values(currentGame.players);
+    // Create CSV content
+    let csvContent = "Playing,Player,Position,Aces,Serves,Digs,Sets,Hits,Kills,Blocks\n";
+    players.forEach(player => {
+        const row = [
+            player.playing ? 'Yes' : 'No',
+            player.name,
+            player.position,
+            player.stats.aces,
+            player.stats.serves,
+            player.stats.digs,
+            player.stats.sets,
+            player.stats.hits,
+            player.stats.kills,
+            player.stats.Blocks
+        ].join(',');
+
+        csvContent += row + '\n';
+    });
+
+    // Create download link
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const fileName = `rallymetric-${currentGame.name.replace(/[^a-zA-Z0-9]/g, '-')}.csv`;
+
+    link.setAttribute('href', url);
+    link.setAttribute('download', fileName);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
