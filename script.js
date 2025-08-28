@@ -12,6 +12,9 @@ const playersList = document.getElementById('players-list');
 const statsBody = document.getElementById('stats-body');
 const downloadCsvButton = document.getElementById('download-csv');
 const minusButton = document.getElementById('minus-button');
+const aboutLink = document.getElementById('about-link');
+const aboutModal = document.getElementById('about-modal');
+const closeModal = document.querySelector('.close');
 
 // State for minus mode
 let minusModeActive = false;
@@ -46,6 +49,24 @@ function setupEventListeners() {
     
     // Minus button
     minusButton.addEventListener('click', toggleMinusMode);
+    
+    // About modal
+    aboutLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        aboutModal.style.display = 'block';
+    });
+    
+    // Close modal
+    closeModal.addEventListener('click', () => {
+        aboutModal.style.display = 'none';
+    });
+    
+    // Close modal when clicking outside of it
+    window.addEventListener('click', (e) => {
+        if (e.target === aboutModal) {
+            aboutModal.style.display = 'none';
+        }
+    });
 }
 
 // Game management functions

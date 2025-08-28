@@ -10,6 +10,7 @@
     <header>
         <h1>RallyMetric</h1>
         <p>A simple statistics tracker for volleyball managers</p>
+        <a href="#" id="about-link">About</a>
     </header>
 
     <main>
@@ -85,5 +86,31 @@
     </main>
 
     <script src="script.js"></script>
+    
+    <!-- About Modal -->
+    <div id="about-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>About RallyMetric</h2>
+            <p>RallyMetric is a simple statistics tracker for volleyball managers.</p>
+            
+            <h3>Source Code</h3>
+            <p>You can find the source code on GitHub: 
+                <a href="https://github.com/epiphenomena/RallyMetric" target="_blank">https://github.com/epiphenomena/RallyMetric</a>
+            </p>
+            
+            <h3>Data Storage</h3>
+            <p>All data is stored locally in your browser's localStorage. This means:</p>
+            <ul>
+                <li>No one else can see your data</li>
+                <li>Your data is not stored on any server</li>
+                <li>If you want to keep your data safe, make backups by downloading CSV files</li>
+                <li>If you clear your browser's cache and cookies for this site, your data will be lost</li>
+            </ul>
+            
+            <h3>Disclaimer</h3>
+            <p>This is a free tool provided as-is. Use at your own risk.</p>
+        </div>
+    </div>
 </body>
 </html>
