@@ -169,6 +169,7 @@ h2 {
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s;
+    margin-left: 3em;
 }
 
 #minus-button.active {
@@ -245,16 +246,16 @@ h2 {
     body {
         padding: 10px;
     }
-    
+
     #player-form {
         flex-direction: column;
     }
-    
+
     #stats-table {
         display: block;
         overflow-x: auto;
     }
-    
+
     .game-selector {
         flex-direction: column;
         align-items: flex-start;
