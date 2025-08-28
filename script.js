@@ -12,23 +12,28 @@ const playersList = document.getElementById('players-list');
 const statsBody = document.getElementById('stats-body');
 const downloadCsvButton = document.getElementById('download-csv');
 const minusButton = document.getElementById('minus-button');
-const aboutLink = document.getElementById('about-link');
-const aboutModal = document.getElementById('about-modal');
-const closeModal = document.querySelector('.close');
+let aboutLink;
+let aboutModal;
+let closeModal;
 
 // State for minus mode
 let minusModeActive = false;
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', () => {
+    // Get modal elements after DOM is loaded
+    aboutLink = document.getElementById('about-link');
+    aboutModal = document.getElementById('about-modal');
+    closeModal = document.querySelector('.close');
+    
     loadGames();
     setupEventListeners();
     renderGameSelector();
-
+    
     if (!currentGameId || !games[currentGameId]) {
         createNewGame();
     }
-
+    
     renderStatsTable();
 });
 
