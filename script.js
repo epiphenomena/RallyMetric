@@ -83,13 +83,29 @@ function addPlayer() {
         position: position,
         playing: false, // Default to not playing when added
         stats: {
-            aces: 0,
-            serves: 0,
+            // Passing
+            pass3: 0,
+            pass2: 0,
+            pass1: 0,
+            // Sets
+            setAtt: 0,
+            setAsst: 0,
+            setErr: 0,
+            // Hitting
+            hitAtt: 0,
+            hitKill: 0,
+            hitErr: 0,
+            // Digs
             digs: 0,
-            sets: 0,
-            hits: 0,
-            kills: 0,
-            blocks: 0
+            digErr: 0,
+            // Block
+            block: 0,
+            blockBLT: 0,
+            blockErr: 0,
+            // Serves
+            serveAtt: 0,
+            serveAce: 0,
+            serveErr: 0
         }
     };
 
@@ -167,40 +183,96 @@ function renderStatsTable() {
             <td><input type="checkbox" class="playing-checkbox" data-player-id="${player.id}" ${player.playing ? 'checked' : ''}></td>
             <td>${player.name}</td>
             <td>${player.position}</td>
+            <!-- Passing -->
             <td>
-                <button class="subtract-column" data-stat="aces" data-player-id="${player.id}">-</button>
-                ${player.stats.aces}
-                <button class="add-column" data-stat="aces" data-player-id="${player.id}">+</button>
+                <button class="subtract-column" data-stat="pass3" data-player-id="${player.id}">-</button>
+                ${player.stats.pass3}
+                <button class="add-column" data-stat="pass3" data-player-id="${player.id}">+</button>
             </td>
             <td>
-                <button class="subtract-column" data-stat="serves" data-player-id="${player.id}">-</button>
-                ${player.stats.serves}
-                <button class="add-column" data-stat="serves" data-player-id="${player.id}">+</button>
+                <button class="subtract-column" data-stat="pass2" data-player-id="${player.id}">-</button>
+                ${player.stats.pass2}
+                <button class="add-column" data-stat="pass2" data-player-id="${player.id}">+</button>
             </td>
+            <td>
+                <button class="subtract-column" data-stat="pass1" data-player-id="${player.id}">-</button>
+                ${player.stats.pass1}
+                <button class="add-column" data-stat="pass1" data-player-id="${player.id}">+</button>
+            </td>
+            <!-- Sets -->
+            <td>
+                <button class="subtract-column" data-stat="setAtt" data-player-id="${player.id}">-</button>
+                ${player.stats.setAtt}
+                <button class="add-column" data-stat="setAtt" data-player-id="${player.id}">+</button>
+            </td>
+            <td>
+                <button class="subtract-column" data-stat="setAsst" data-player-id="${player.id}">-</button>
+                ${player.stats.setAsst}
+                <button class="add-column" data-stat="setAsst" data-player-id="${player.id}">+</button>
+            </td>
+            <td>
+                <button class="subtract-column" data-stat="setErr" data-player-id="${player.id}">-</button>
+                ${player.stats.setErr}
+                <button class="add-column" data-stat="setErr" data-player-id="${player.id}">+</button>
+            </td>
+            <!-- Hitting -->
+            <td>
+                <button class="subtract-column" data-stat="hitAtt" data-player-id="${player.id}">-</button>
+                ${player.stats.hitAtt}
+                <button class="add-column" data-stat="hitAtt" data-player-id="${player.id}">+</button>
+            </td>
+            <td>
+                <button class="subtract-column" data-stat="hitKill" data-player-id="${player.id}">-</button>
+                ${player.stats.hitKill}
+                <button class="add-column" data-stat="hitKill" data-player-id="${player.id}">+</button>
+            </td>
+            <td>
+                <button class="subtract-column" data-stat="hitErr" data-player-id="${player.id}">-</button>
+                ${player.stats.hitErr}
+                <button class="add-column" data-stat="hitErr" data-player-id="${player.id}">+</button>
+            </td>
+            <!-- Digs -->
             <td>
                 <button class="subtract-column" data-stat="digs" data-player-id="${player.id}">-</button>
                 ${player.stats.digs}
                 <button class="add-column" data-stat="digs" data-player-id="${player.id}">+</button>
             </td>
             <td>
-                <button class="subtract-column" data-stat="sets" data-player-id="${player.id}">-</button>
-                ${player.stats.sets}
-                <button class="add-column" data-stat="sets" data-player-id="${player.id}">+</button>
+                <button class="subtract-column" data-stat="digErr" data-player-id="${player.id}">-</button>
+                ${player.stats.digErr}
+                <button class="add-column" data-stat="digErr" data-player-id="${player.id}">+</button>
+            </td>
+            <!-- Block -->
+            <td>
+                <button class="subtract-column" data-stat="block" data-player-id="${player.id}">-</button>
+                ${player.stats.block}
+                <button class="add-column" data-stat="block" data-player-id="${player.id}">+</button>
             </td>
             <td>
-                <button class="subtract-column" data-stat="hits" data-player-id="${player.id}">-</button>
-                ${player.stats.hits}
-                <button class="add-column" data-stat="hits" data-player-id="${player.id}">+</button>
+                <button class="subtract-column" data-stat="blockBLT" data-player-id="${player.id}">-</button>
+                ${player.stats.blockBLT}
+                <button class="add-column" data-stat="blockBLT" data-player-id="${player.id}">+</button>
             </td>
             <td>
-                <button class="subtract-column" data-stat="kills" data-player-id="${player.id}">-</button>
-                ${player.stats.kills}
-                <button class="add-column" data-stat="kills" data-player-id="${player.id}">+</button>
+                <button class="subtract-column" data-stat="blockErr" data-player-id="${player.id}">-</button>
+                ${player.stats.blockErr}
+                <button class="add-column" data-stat="blockErr" data-player-id="${player.id}">+</button>
+            </td>
+            <!-- Serves -->
+            <td>
+                <button class="subtract-column" data-stat="serveAtt" data-player-id="${player.id}">-</button>
+                ${player.stats.serveAtt}
+                <button class="add-column" data-stat="serveAtt" data-player-id="${player.id}">+</button>
             </td>
             <td>
-                <button class="subtract-column" data-stat="blocks" data-player-id="${player.id}">-</button>
-                ${player.stats.blocks}
-                <button class="add-column" data-stat="blocks" data-player-id="${player.id}">+</button>
+                <button class="subtract-column" data-stat="serveAce" data-player-id="${player.id}">-</button>
+                ${player.stats.serveAce}
+                <button class="add-column" data-stat="serveAce" data-player-id="${player.id}">+</button>
+            </td>
+            <td>
+                <button class="subtract-column" data-stat="serveErr" data-player-id="${player.id}">-</button>
+                ${player.stats.serveErr}
+                <button class="add-column" data-stat="serveErr" data-player-id="${player.id}">+</button>
             </td>
             <td class="actions">
                 <button class="remove-player-row" data-player-id="${player.id}">×</button>
@@ -275,21 +347,30 @@ function downloadCSV() {
     const currentGame = games[currentGameId];
     const players = Object.values(currentGame.players);
     // Create CSV content
-    let csvContent = "Playing,Player,Position,Aces,Serves,Digs,Sets,Hits,Kills,Blocks\n";
+    let csvContent = "Playing,Player,Position,Pass3,Pass2,Pass1,SetAtt,SetAsst,SetErr,HitAtt,HitKill,HitErr,Digs,DigErr,Block,BLT,BlockErr,ServeAtt,ServeAce,ServeErr\n";
     players.forEach(player => {
         const row = [
             player.playing ? 'Yes' : 'No',
             player.name,
             player.position,
-            player.stats.aces,
-            player.stats.serves,
+            player.stats.pass3,
+            player.stats.pass2,
+            player.stats.pass1,
+            player.stats.setAtt,
+            player.stats.setAsst,
+            player.stats.setErr,
+            player.stats.hitAtt,
+            player.stats.hitKill,
+            player.stats.hitErr,
             player.stats.digs,
-            player.stats.sets,
-            player.stats.hits,
-            player.stats.kills,
-            player.stats.Blocks
+            player.stats.digErr,
+            player.stats.block,
+            player.stats.blockBLT,
+            player.stats.blockErr,
+            player.stats.serveAtt,
+            player.stats.serveAce,
+            player.stats.serveErr
         ].join(',');
-
         csvContent += row + '\n';
     });
 
