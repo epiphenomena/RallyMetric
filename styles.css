@@ -138,6 +138,9 @@ h2 {
 }
 
 .stats-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
     margin-bottom: 15px;
 }
 
@@ -153,6 +156,24 @@ h2 {
 
 #download-csv:hover {
     background-color: #8e44ad;
+}
+
+#minus-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #e74c3c;
+    background-color: white;
+    color: #e74c3c;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#minus-button.active {
+    background-color: #e74c3c;
+    color: white;
 }
 
 #stats-table {
@@ -208,46 +229,15 @@ h2 {
     margin: 0;
 }
 
-.add-column,
-.subtract-column {
-    padding: 5px 10px;
-    margin: 0 2px;
-    border: none;
-    border-radius: 4px;
+/* Stat cells */
+.stat-cell {
     cursor: pointer;
-    font-weight: bold;
+    user-select: none;
+    transition: background-color 0.2s;
 }
 
-.add-column {
-    background-color: #27ae60;
-    color: white;
-}
-
-.subtract-column {
-    background-color: #e74c3c;
-    color: white;
-}
-
-.add-column:hover {
-    background-color: #219653;
-}
-
-.subtract-column:hover {
-    background-color: #c0392b;
-}
-
-.actions {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.remove-player-row {
-    background: none;
-    border: none;
-    color: #e74c3c;
-    cursor: pointer;
-    font-size: 18px;
+.stat-cell:hover {
+    background-color: rgba(0,0,0,0.1);
 }
 
 /* Responsive design */

@@ -11,6 +11,10 @@ const playerPositionInput = document.getElementById('player-position');
 const playersList = document.getElementById('players-list');
 const statsBody = document.getElementById('stats-body');
 const downloadCsvButton = document.getElementById('download-csv');
+const minusButton = document.getElementById('minus-button');
+
+// State for minus mode
+let minusModeActive = false;
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', () => {
@@ -39,6 +43,9 @@ function setupEventListeners() {
 
     // Download CSV
     downloadCsvButton.addEventListener('click', downloadCSV);
+    
+    // Minus button
+    minusButton.addEventListener('click', toggleMinusMode);
 }
 
 // Game management functions
@@ -199,149 +206,88 @@ function renderGameSelector() {
 
 function renderStatsTable() {
     if (!currentGameId || !games[currentGameId]) return;
-
+    
     const currentGame = games[currentGameId];
     statsBody.innerHTML = '';
-
+    
     // Sort players: playing first, then by position, then by name
     const sortedPlayers = Object.values(currentGame.players).sort((a, b) => {
         // First sort by playing status (playing first)
         if (a.playing && !b.playing) return -1;
         if (!a.playing && b.playing) return 1;
-
+        
         // Then sort by position
         const positionOrder = { 'Setter': 1, 'Hitter': 2, 'DS': 3 };
         const positionComparison = (positionOrder[a.position] || 4) - (positionOrder[b.position] || 4);
         if (positionComparison !== 0) return positionComparison;
-
+        
         // Finally sort by name
         return a.name.localeCompare(b.name);
     });
-
+    
     sortedPlayers.forEach(player => {
         const row = document.createElement('tr');
-
+        
         // Add position-based CSS class
         const positionClass = player.position.toLowerCase() + '-row';
         row.classList.add(positionClass);
-
+        
         row.innerHTML = `
             <td><input type="checkbox" class="playing-checkbox" data-player-id="${player.id}" ${player.playing ? 'checked' : ''}></td>
             <td>${player.name}</td>
             <td>${player.position}</td>
             <!-- Passing -->
-            <td>
-                <button class="subtract-column" data-stat="pass3" data-player-id="${player.id}">-</button>
-                ${player.stats.pass3}
-                <button class="add-column" data-stat="pass3" data-player-id="${player.id}">+</button>
-            </td>
-            <td>
-                <button class="subtract-column" data-stat="pass2" data-player-id="${player.id}">-</button>
-                ${player.stats.pass2}
-                <button class="add-column" data-stat="pass2" data-player-id="${player.id}">+</button>
-            </td>
-            <td>
-                <button class="subtract-column" data-stat="pass1" data-player-id="${player.id}">-</button>
-                ${player.stats.pass1}
-                <button class="add-column" data-stat="pass1" data-player-id="${player.id}">+</button>
-            </td>
+            <td class="stat-cell" data-stat="pass3" data-player-id="${player.id}">${player.stats.pass3}</td>
+            <td class="stat-cell" data-stat="pass2" data-player-id="${player.id}">${player.stats.pass2}</td>
+            <td class="stat-cell" data-stat="pass1" data-player-id="${player.id}">${player.stats.pass1}</td>
             <!-- Sets -->
-            <td>
-                <button class="subtract-column" data-stat="setAtt" data-player-id="${player.id}">-</button>
-                ${player.stats.setAtt}
-                <button class="add-column" data-stat="setAtt" data-player-id="${player.id}">+</button>
-            </td>
-            <td>
-                <button class="subtract-column" data-stat="setAsst" data-player-id="${player.id}">-</button>
-                ${player.stats.setAsst}
-                <button class="add-column" data-stat="setAsst" data-player-id="${player.id}">+</button>
-            </td>
-            <td>
-                <button class="subtract-column" data-stat="setErr" data-player-id="${player.id}">-</button>
-                ${player.stats.setErr}
-                <button class="add-column" data-stat="setErr" data-player-id="${player.id}">+</button>
-            </td>
+            <td class="stat-cell" data-stat="setAtt" data-player-id="${player.id}">${player.stats.setAtt}</td>
+            <td class="stat-cell" data-stat="setAsst" data-player-id="${player.id}">${player.stats.setAsst}</td>
+            <td class="stat-cell" data-stat="setErr" data-player-id="${player.id}">${player.stats.setErr}</td>
             <!-- Hitting -->
-            <td>
-                <button class="subtract-column" data-stat="hitAtt" data-player-id="${player.id}">-</button>
-                ${player.stats.hitAtt}
-                <button class="add-column" data-stat="hitAtt" data-player-id="${player.id}">+</button>
-            </td>
-            <td>
-                <button class="subtract-column" data-stat="hitKill" data-player-id="${player.id}">-</button>
-                ${player.stats.hitKill}
-                <button class="add-column" data-stat="hitKill" data-player-id="${player.id}">+</button>
-            </td>
-            <td>
-                <button class="subtract-column" data-stat="hitErr" data-player-id="${player.id}">-</button>
-                ${player.stats.hitErr}
-                <button class="add-column" data-stat="hitErr" data-player-id="${player.id}">+</button>
-            </td>
+            <td class="stat-cell" data-stat="hitAtt" data-player-id="${player.id}">${player.stats.hitAtt}</td>
+            <td class="stat-cell" data-stat="hitKill" data-player-id="${player.id}">${player.stats.hitKill}</td>
+            <td class="stat-cell" data-stat="hitErr" data-player-id="${player.id}">${player.stats.hitErr}</td>
             <!-- Digs -->
-            <td>
-                <button class="subtract-column" data-stat="digs" data-player-id="${player.id}">-</button>
-                ${player.stats.digs}
-                <button class="add-column" data-stat="digs" data-player-id="${player.id}">+</button>
-            </td>
-            <td>
-                <button class="subtract-column" data-stat="digErr" data-player-id="${player.id}">-</button>
-                ${player.stats.digErr}
-                <button class="add-column" data-stat="digErr" data-player-id="${player.id}">+</button>
-            </td>
+            <td class="stat-cell" data-stat="digs" data-player-id="${player.id}">${player.stats.digs}</td>
+            <td class="stat-cell" data-stat="digErr" data-player-id="${player.id}">${player.stats.digErr}</td>
             <!-- Block -->
-            <td>
-                <button class="subtract-column" data-stat="block" data-player-id="${player.id}">-</button>
-                ${player.stats.block}
-                <button class="add-column" data-stat="block" data-player-id="${player.id}">+</button>
-            </td>
-            <td>
-                <button class="subtract-column" data-stat="blockBLT" data-player-id="${player.id}">-</button>
-                ${player.stats.blockBLT}
-                <button class="add-column" data-stat="blockBLT" data-player-id="${player.id}">+</button>
-            </td>
-            <td>
-                <button class="subtract-column" data-stat="blockErr" data-player-id="${player.id}">-</button>
-                ${player.stats.blockErr}
-                <button class="add-column" data-stat="blockErr" data-player-id="${player.id}">+</button>
-            </td>
+            <td class="stat-cell" data-stat="block" data-player-id="${player.id}">${player.stats.block}</td>
+            <td class="stat-cell" data-stat="blockBLT" data-player-id="${player.id}">${player.stats.blockBLT}</td>
+            <td class="stat-cell" data-stat="blockErr" data-player-id="${player.id}">${player.stats.blockErr}</td>
             <!-- Serves -->
-            <td>
-                <button class="subtract-column" data-stat="serveAtt" data-player-id="${player.id}">-</button>
-                ${player.stats.serveAtt}
-                <button class="add-column" data-stat="serveAtt" data-player-id="${player.id}">+</button>
-            </td>
-            <td>
-                <button class="subtract-column" data-stat="serveAce" data-player-id="${player.id}">-</button>
-                ${player.stats.serveAce}
-                <button class="add-column" data-stat="serveAce" data-player-id="${player.id}">+</button>
-            </td>
-            <td>
-                <button class="subtract-column" data-stat="serveErr" data-player-id="${player.id}">-</button>
-                ${player.stats.serveErr}
-                <button class="add-column" data-stat="serveErr" data-player-id="${player.id}">+</button>
-            </td>
+            <td class="stat-cell" data-stat="serveAtt" data-player-id="${player.id}">${player.stats.serveAtt}</td>
+            <td class="stat-cell" data-stat="serveAce" data-player-id="${player.id}">${player.stats.serveAce}</td>
+            <td class="stat-cell" data-stat="serveErr" data-player-id="${player.id}">${player.stats.serveErr}</td>
             <td class="actions">
                 <button class="remove-player-row" data-player-id="${player.id}">×</button>
             </td>
         `;
-
+        
         statsBody.appendChild(row);
     });
-
-    // Add event listeners for the new buttons
-    document.querySelectorAll('.subtract-column, .add-column').forEach(button => {
-        button.addEventListener('click', (e) => {
+    
+    // Add event listeners for the stat cells
+    document.querySelectorAll('.stat-cell').forEach(cell => {
+        cell.addEventListener('click', (e) => {
             e.stopPropagation();
-            const stat = button.getAttribute('data-stat');
-            const playerId = button.getAttribute('data-player-id');
-            const change = button.classList.contains('add-column') ? 1 : -1;
-
+            const stat = cell.getAttribute('data-stat');
+            const playerId = cell.getAttribute('data-player-id');
+            
+            // Determine if we're adding or subtracting
+            const change = minusModeActive ? -1 : 1;
+            
             updatePlayerStat(playerId, stat, change);
             saveGame();
             renderStatsTable();
+            
+            // If we were in minus mode, deactivate it
+            if (minusModeActive) {
+                toggleMinusMode();
+            }
         });
     });
-
+    
     document.querySelectorAll('.remove-player-row').forEach(button => {
         button.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -349,7 +295,7 @@ function renderStatsTable() {
             removePlayer(playerId);
         });
     });
-
+    
     // Add event listeners for the playing checkboxes
     document.querySelectorAll('.playing-checkbox').forEach(checkbox => {
         checkbox.addEventListener('change', (e) => {
@@ -357,7 +303,7 @@ function renderStatsTable() {
             const playerId = checkbox.getAttribute('data-player-id');
             const currentGame = games[currentGameId];
             const player = currentGame.players[playerId];
-
+            
             if (player) {
                 player.playing = checkbox.checked;
                 saveGame();
@@ -384,6 +330,16 @@ function loadGames() {
         Object.values(games).forEach(game => {
             game.date = new Date(game.date);
         });
+    }
+}
+
+// Minus mode functions
+function toggleMinusMode() {
+    minusModeActive = !minusModeActive;
+    if (minusModeActive) {
+        minusButton.classList.add('active');
+    } else {
+        minusButton.classList.remove('active');
     }
 }
 
