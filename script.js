@@ -46,14 +46,60 @@ function createNewGame() {
     const now = new Date();
     const gameId = now.toISOString();
     const gameName = `${now.toLocaleDateString()} ${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
-
-    games[gameId] = {
+    
+    // Create new game with empty players object
+    const newGame = {
         id: gameId,
         name: gameName,
         date: now,
         players: {}
     };
-
+    
+    // If there are existing games, copy player names and positions from the most recent game
+    const gameIds = Object.keys(games);
+    if (gameIds.length > 0) {
+        // Find the most recent game
+        const mostRecentGameId = gameIds.reduce((mostRecent, gameId) => {
+            if (!mostRecent) return gameId;
+            return games[gameId].date > games[mostRecent].date ? gameId : mostRecent;
+        }, null);
+        
+        // Copy player names and positions (but not stats) from the most recent game
+        if (mostRecentGameId) {
+            const mostRecentGame = games[mostRecentGameId];
+            Object.values(mostRecentGame.players).forEach(player => {
+                const playerId = Date.now().toString() + Math.random().toString(36).substr(2, 9); // New unique ID
+                newGame.players[playerId] = {
+                    id: playerId,
+                    name: player.name,
+                    position: player.position,
+                    playing: false, // Default to not playing
+                    stats: {
+                        // Initialize all stats to 0
+                        pass3: 0,
+                        pass2: 0,
+                        pass1: 0,
+                        setAtt: 0,
+                        setAsst: 0,
+                        setErr: 0,
+                        hitAtt: 0,
+                        hitKill: 0,
+                        hitErr: 0,
+                        digs: 0,
+                        digErr: 0,
+                        block: 0,
+                        blockBLT: 0,
+                        blockErr: 0,
+                        serveAtt: 0,
+                        serveAce: 0,
+                        serveErr: 0
+                    }
+                };
+            });
+        }
+    }
+    
+    games[gameId] = newGame;
     currentGameId = gameId;
     localStorage.setItem('rallymetric-current-game', currentGameId);
     saveGames();
