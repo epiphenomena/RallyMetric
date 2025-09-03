@@ -112,6 +112,7 @@ function createNewGame() {
                         pass3: 0,
                         pass2: 0,
                         pass1: 0,
+                        pass0: 0,
                         setAtt: 0,
                         setAsst: 0,
                         setErr: 0,
@@ -166,6 +167,7 @@ function addPlayer() {
             pass3: 0,
             pass2: 0,
             pass1: 0,
+            pass0: 0,
             // Sets
             setAtt: 0,
             setAsst: 0,
@@ -266,6 +268,7 @@ function renderStatsTable() {
             <td class="stat-cell" data-stat="pass3" data-player-id="${player.id}">${player.stats.pass3}</td>
             <td class="stat-cell" data-stat="pass2" data-player-id="${player.id}">${player.stats.pass2}</td>
             <td class="stat-cell" data-stat="pass1" data-player-id="${player.id}">${player.stats.pass1}</td>
+            <td class="stat-cell" data-stat="pass0" data-player-id="${player.id}">${player.stats.pass0}</td>
             <!-- Sets -->
             <td class="stat-cell" data-stat="setAtt" data-player-id="${player.id}">${player.stats.setAtt}</td>
             <td class="stat-cell" data-stat="setAsst" data-player-id="${player.id}">${player.stats.setAsst}</td>
@@ -375,7 +378,7 @@ function downloadCSV() {
     const currentGame = games[currentGameId];
     const players = Object.values(currentGame.players);
     // Create CSV content
-    let csvContent = "Playing,Player,Position,Pass3,Pass2,Pass1,SetAtt,SetAsst,SetErr,HitAtt,HitKill,HitErr,Digs,DigErr,Block,BLT,BlockErr,ServeAtt,ServeAce,ServeErr\n";
+    let csvContent = "Playing,Player,Position,Pass3,Pass2,Pass1,Pass0,SetAtt,SetAsst,SetErr,HitAtt,HitKill,HitErr,Digs,DigErr,Block,BLT,BlockErr,ServeAtt,ServeAce,ServeErr\n";
     players.forEach(player => {
         const row = [
             player.playing ? 'Yes' : 'No',
@@ -384,6 +387,7 @@ function downloadCSV() {
             player.stats.pass3,
             player.stats.pass2,
             player.stats.pass1,
+            player.stats.pass0,
             player.stats.setAtt,
             player.stats.setAsst,
             player.stats.setErr,
